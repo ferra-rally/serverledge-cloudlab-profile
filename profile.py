@@ -98,7 +98,7 @@ nfsLan.addInterface(routerEdge.addInterface())
 
 routerCloud = request.XenVM("cloudEdge")
 routerCloud.disk_image = params.osImage
-nfsLan.addInterface(routerCloud.addInterface())
+cloudLan.addInterface(routerCloud.addInterface())
 
 link = request.BridgedLink("link")
 link.bridge.hardware_type = "d430"
