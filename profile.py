@@ -101,7 +101,6 @@ routerCloud.disk_image = params.osImage
 cloudLan.addInterface(routerCloud.addInterface())
 
 link = request.BridgedLink("link")
-link.bridge.hardware_type = "d430"
 # Add the interfaces we created above.
 link.addInterface(routerCloud.addInterface())
 link.addInterface(routerEdge.addInterface())
