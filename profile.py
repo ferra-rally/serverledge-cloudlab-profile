@@ -21,9 +21,8 @@ pc.defineParameter("clientCount", "Number of Compute Nodes (1-10)",
                    portal.ParameterType.INTEGER, 1)
 
 # Variable number of edge nodes.
-pc.defineParameter("edgeCount", "Number of Nodes", portal.ParameterType.INTEGER, 1,
-                   longDescription="If you specify more then one node, " +
-                   "we will create a lan for you.")
+pc.defineParameter("edgeCount", "Number of Edge Nodes", portal.ParameterType.INTEGER, 1,
+                   longDescription="Number of edge serverledge nodes")
 
 # Variable number of cloud nodes.
 pc.defineParameter("cloudCount", "Number of Nodes", portal.ParameterType.INTEGER, 1,
@@ -53,7 +52,7 @@ nfsLan.best_effort       = True
 nfsLan.vlan_tagging      = True
 nfsLan.link_multiplexing = True
 
-
+"""
 for i in range(1, params.clientCount+1):
     node = request.RawPC("node%d" % i)
     node.disk_image = params.osImage
@@ -65,6 +64,20 @@ for i in range(1, params.clientCount+1):
         bsName="bs"+str(i)
         bs = node.Blockstore(bsName, "/var/lib/libvirt/images")
         bs.size=str(params.localStorage)+"GB"
+"""
+
+for i in range(1, params.edgeNodes+1):
+    name = "client" + str(i)
+    node = request.XenVM(name)
+    node.disk_image = params.osImage
+    nfsLan.addInterface(node.addInterface())
+
+for i in range(1, params.clientCount+1):
+    name = "edge" + str(i)
+    node = request.XenVM(name)
+    node.disk_image = params.osImage
+    # Initialization script for the clients
+    nfsLan.addInterface(node.addInterface())
 
 """
 # Create link/lan.
