@@ -97,7 +97,7 @@ link.bridge.hardware_type = "d430"
 # Add the interfaces we created above.
 link.addInterface(nfsLan)
 link.addInterface(cloudLan)
-link.latency = params.lantecy
+link.latency = params.latency
 
 """
 # Create link/lan.
