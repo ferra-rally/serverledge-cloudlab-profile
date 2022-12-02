@@ -96,7 +96,7 @@ routerEdge = request.XenVM("routerEdge")
 routerEdge.disk_image = params.osImage
 nfsLan.addInterface(routerEdge.addInterface())
 
-routerCloud = request.XenVM("cloudEdge")
+routerCloud = request.XenVM("routerCloud")
 routerCloud.disk_image = params.osImage
 cloudLan.addInterface(routerCloud.addInterface())
 
