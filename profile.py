@@ -86,17 +86,25 @@ for i in range(1, params.clientNodes+1):
 
 for i in range(1, params.cloudNodes + 1):
     name = "cloud" + str(i)
-    node = request.RawPC("node%d" % i)
+    node = request.RawPC(name)
     node.disk_image = params.osImage
     node.hardware_type = params.phystype
     # Initialization script for the clients
     cloudLan.addInterface(node.addInterface())
 
+routerEdge = request.XenVM("routerEdge")
+routerEdge.disk_image = params.osImage
+nfsLan.addInterface(routerEdge.addInterface())
+
+routerCloud = request.XenVM("cloudEdge")
+routerCloud.disk_image = params.osImage
+nfsLan.addInterface(routerCloud.addInterface())
+
 link = request.BridgedLink("link")
 link.bridge.hardware_type = "d430"
 # Add the interfaces we created above.
-link.addInterface(nfsLan)
-link.addInterface(cloudLan)
+link.addInterface(routerCloud.addInterface())
+link.addInterface(routerEdge.addInterface())
 link.latency = params.latency
 
 """
