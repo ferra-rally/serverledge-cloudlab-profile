@@ -17,11 +17,11 @@ imageList = [
     ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU18-64-STD', 'UBUNTU 18.04'),
 ]
 
-pc.defineParameter("clientCount", "Number of Compute Nodes (1-10)",
+pc.defineParameter("clientNodes", "Number of Compute Nodes (1-10)",
                    portal.ParameterType.INTEGER, 1)
 
 # Variable number of edge nodes.
-pc.defineParameter("edgeCount", "Number of Edge Nodes", portal.ParameterType.INTEGER, 1,
+pc.defineParameter("edgeNodes", "Number of Edge Nodes", portal.ParameterType.INTEGER, 1,
                    longDescription="Number of edge serverledge nodes")
 
 # Variable number of cloud nodes.
@@ -72,7 +72,7 @@ for i in range(1, params.edgeNodes+1):
     node.disk_image = params.osImage
     nfsLan.addInterface(node.addInterface())
 
-for i in range(1, params.clientCount+1):
+for i in range(1, params.clientNodes+1):
     name = "edge" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
