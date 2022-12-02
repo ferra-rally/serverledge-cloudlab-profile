@@ -92,6 +92,13 @@ for i in range(1, params.cloudNodes + 1):
     # Initialization script for the clients
     cloudLan.addInterface(node.addInterface())
 
+
+router = request.XenVM("router")
+cloudLan.addInterface(router.addInterface())
+nfsLan.addInterface(router.addInterface())
+router.disk_image = params.osImage
+
+"""
 routerEdge = request.XenVM("routerEdge")
 routerEdge.disk_image = params.osImage
 nfsLan.addInterface(routerEdge.addInterface())
@@ -105,7 +112,7 @@ link = request.BridgedLink("link")
 link.addInterface(routerCloud.addInterface())
 link.addInterface(routerEdge.addInterface())
 link.latency = params.latency
-
+"""
 """
 # Create link/lan.
 if params.nodeCount > 1:
