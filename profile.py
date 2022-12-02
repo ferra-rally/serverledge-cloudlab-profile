@@ -29,7 +29,7 @@ pc.defineParameter("cloudNodes", "Number of Cloud Nodes", portal.ParameterType.I
                    longDescription="If you specify more then one node, " +
                    "we will create a lan for you.")
 
-pc.defineParameter("latency", "Latency of the edge-cloud link", portal.ParameterType.FLOAT, 100)
+pc.defineParameter("latency", "Latency of the edge-cloud link", portal.ParameterType.LATENCY, 100)
 
 pc.defineParameter("osImage", "Select OS image",
                    portal.ParameterType.IMAGE,
