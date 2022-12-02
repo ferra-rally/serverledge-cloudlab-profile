@@ -17,7 +17,7 @@ imageList = [
     ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU18-64-STD', 'UBUNTU 18.04'),
 ]
 
-pc.defineParameter("clientNodes", "Number of Compute Nodes (1-10)",
+pc.defineParameter("clientNodes", "Number of Client Nodes",
                    portal.ParameterType.INTEGER, 1)
 
 # Variable number of edge nodes.
@@ -25,21 +25,21 @@ pc.defineParameter("edgeNodes", "Number of Edge Nodes", portal.ParameterType.INT
                    longDescription="Number of edge serverledge nodes")
 
 # Variable number of cloud nodes.
-pc.defineParameter("cloudCount", "Number of Nodes", portal.ParameterType.INTEGER, 1,
+pc.defineParameter("cloudNodes", "Number of Cloud Nodes", portal.ParameterType.INTEGER, 1,
                    longDescription="If you specify more then one node, " +
                    "we will create a lan for you.")
+
+pc.defineParameter("latency", "Latency of the edge-cloud link", portal.ParameterType.FLOAT, 100)
 
 pc.defineParameter("osImage", "Select OS image",
                    portal.ParameterType.IMAGE,
                    imageList[0], imageList)
 
-pc.defineParameter("phystype",  "Optional physical node type",
+pc.defineParameter("phystype",  "Optional cloud physical node type",
                    portal.ParameterType.STRING, "c6320",
                    longDescription="Specify a physical node type (pc3000,d710,etc) " +
                    "instead of letting the resource mapper choose for you.")
 
-pc.defineParameter("localStorage", "Extra local storage in GB",
-                   portal.ParameterType.INTEGER, 20)
 
 
 
@@ -47,10 +47,15 @@ pc.defineParameter("localStorage", "Extra local storage in GB",
 params = pc.bindParameters()
 
 # The NFS network. All these options are required.
-nfsLan = request.LAN("myLan")
+nfsLan = request.LAN("edgeLAN")
 nfsLan.best_effort       = True
 nfsLan.vlan_tagging      = True
 nfsLan.link_multiplexing = True
+
+cloudLan = request.LAN("cloudLAN")
+cloudLan.best_effort       = True
+cloudLan.vlan_tagging      = True
+cloudLan.link_multiplexing = True
 
 """
 for i in range(1, params.clientCount+1):
@@ -78,6 +83,21 @@ for i in range(1, params.clientNodes+1):
     node.disk_image = params.osImage
     # Initialization script for the clients
     nfsLan.addInterface(node.addInterface())
+
+for i in range(1, params.cloudNodes + 1):
+    name = "cloud" + str(i)
+    node = request.RawPC("node%d" % i)
+    node.disk_image = params.osImage
+    node.hardware_type = params.phystype
+    # Initialization script for the clients
+    cloudLan.addInterface(node.addInterface())
+
+link = request.BridgedLink("link")
+link.bridge.hardware_type = "d430"
+# Add the interfaces we created above.
+link.addInterface(nfsLan)
+link.addInterface(cloudLan)
+link.latency = params.lantecy
 
 """
 # Create link/lan.
