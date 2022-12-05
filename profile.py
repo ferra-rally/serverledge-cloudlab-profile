@@ -97,6 +97,7 @@ for i in range(1, params.edgeNodes+1):
     interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
     nfsLan.addInterface(interface)
 
+
 for i in range(1, params.clientNodes+1):
     name = "edge" + str(i)
     node = request.XenVM(name)
@@ -105,7 +106,7 @@ for i in range(1, params.clientNodes+1):
     node.addService(rspec.Execute(shell="bash", command="python3 /local/get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
 
-    ip = "10.10.1." + str(params.edgeNodes + i + 2)
+    ip = "10.10.1." + str(50 + i)
     interface = node.addInterface()
     interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
     nfsLan.addInterface(interface)
