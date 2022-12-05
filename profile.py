@@ -71,6 +71,11 @@ for i in range(1, params.clientCount+1):
         bs.size=str(params.localStorage)+"GB"
 """
 
+router = request.XenVM("router")
+cloudLan.addInterface(router.addInterface())
+nfsLan.addInterface(router.addInterface())
+router.disk_image = params.osImage
+
 for i in range(1, params.edgeNodes+1):
     name = "client" + str(i)
     node = request.XenVM(name)
@@ -93,13 +98,6 @@ for i in range(1, params.cloudNodes + 1):
     node.hardware_type = params.phystype
     ip = "192.168.2." + str(i+1)
     #cloudLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
-
-
-router = request.XenVM("router")
-cloudLan.addInterface(router.addInterface(rspec.IPv4Address("192.168.2.1", "255.255.255.0")))
-nfsLan.addInterface(router.addInterface(rspec.IPv4Address("192.168.1.1", "255.255.255.0")))
-router.disk_image = params.osImage
-router.addService(rspec.Execute(shell="bash", command="ip route add 8.8.8.8/32 via 192.168.1.254 dev venet0:0"))
 
 
 """
