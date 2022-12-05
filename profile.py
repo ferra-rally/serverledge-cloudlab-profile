@@ -81,7 +81,6 @@ for i in range(1, params.clientNodes+1):
     name = "edge" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
-    # Initialization script for the clients
     nfsLan.addInterface(node.addInterface())
 
 for i in range(1, params.cloudNodes + 1):
@@ -89,14 +88,18 @@ for i in range(1, params.cloudNodes + 1):
     node = request.RawPC(name)
     node.disk_image = params.osImage
     node.hardware_type = params.phystype
-    # Initialization script for the clients
     cloudLan.addInterface(node.addInterface())
 
 
 router = request.XenVM("router")
-cloudLan.addInterface(router.addInterface())
-nfsLan.addInterface(router.addInterface())
+int1 = cloudLan.addInterface(router.addInterface())
+int2 = nfsLan.addInterface(router.addInterface())
 router.disk_image = params.osImage
+
+link = request.BridgedLink("link")
+link.addInterface(cloudLan.addInterface())
+link.addInterface(nfsLan.addInterface())
+link.latency = params.latency
 
 """
 routerEdge = request.XenVM("routerEdge")
