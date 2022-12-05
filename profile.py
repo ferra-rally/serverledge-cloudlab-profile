@@ -106,7 +106,11 @@ for i in range(1, params.clientNodes+1):
 
 for i in range(1, params.cloudNodes + 1):
     name = "cloud" + str(i)
-    node = request.RawPC(name)
+
+    #TODO change
+    #node = request.RawPC(name)
+    node = request.XenVM(name)
+
     node.disk_image = params.osImage
     node.hardware_type = params.phystype
     node.addService(rspec.Install(url="https://bootstrap.pypa.io/get-pip.py", path="/local"))
