@@ -76,7 +76,7 @@ for i in range(1, params.edgeNodes+1):
     node = request.XenVM(name)
     node.disk_image = params.osImage
     node.addService(pg.Execute(shell="bash", command="ip route add 192.168.2.0/24 via 192.168.1.1 dev eth0"))
-    ip = f"192.168.1.{i+1}"
+    ip = "192.168.1." + str(i+1)
     nfsLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
 
 for i in range(1, params.clientNodes+1):
@@ -91,7 +91,7 @@ for i in range(1, params.cloudNodes + 1):
     node = request.RawPC(name)
     node.disk_image = params.osImage
     node.hardware_type = params.phystype
-    ip = f"192.168.2.{i + 1}"
+    ip = "192.168.2.}" + str(i+1)
     cloudLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
 
 
