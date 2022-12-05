@@ -92,8 +92,10 @@ for i in range(1, params.edgeNodes+1):
     node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
-    #ip = "192.168.1." + str(i+1)
-    nfsLan.addInterface(node.addInterface())
+    ip = "10.10.1." + str(i+1)
+    interface = node.addInterface()
+    interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
+    nfsLan.addInterface(interface)
 
 for i in range(1, params.clientNodes+1):
     name = "edge" + str(i)
@@ -102,7 +104,11 @@ for i in range(1, params.clientNodes+1):
     node.addService(rspec.Install(url="https://bootstrap.pypa.io/get-pip.py", path="/local"))
     node.addService(rspec.Execute(shell="bash", command="python3 /local/get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
-    nfsLan.addInterface(node.addInterface())
+
+    ip = "10.10.1." + str(params.edgeNodes + i + 2)
+    interface = node.addInterface()
+    interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
+    nfsLan.addInterface(interface)
 
 for i in range(1, params.cloudNodes + 1):
     name = "cloud" + str(i)
@@ -119,8 +125,14 @@ for i in range(1, params.cloudNodes + 1):
     node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.1.0/24 via 10.10.2.1 dev eth1"))
-    #ip = "192.168.2." + str(i+1)
-    cloudLan.addInterface(node.addInterface())
+
+    ip = "10.10.2." + str(i + 1)
+    interface = node.addInterface()
+    interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
+    nfsLan.addInterface(interface)
+    cloudLan.addInterface(interface)
+
+
 
 
 """
