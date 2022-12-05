@@ -96,8 +96,8 @@ for i in range(1, params.cloudNodes + 1):
 
 
 router = request.XenVM("router")
-cloudLan.addInterface(router.addInterface(pg.IPv4Address(f"192.168.2.{1}", "255.255.255.0")))
-nfsLan.addInterface(router.addInterface(pg.IPv4Address(f"192.168.1.{1}", "255.255.255.0")))
+cloudLan.addInterface(router.addInterface(pg.IPv4Address("192.168.2.1", "255.255.255.0")))
+nfsLan.addInterface(router.addInterface(pg.IPv4Address("192.168.1.1", "255.255.255.0")))
 router.disk_image = params.osImage
 router.addService(pg.Execute(shell="bash", command="ip route add 8.8.8.8/32 via 192.168.1.254 dev venet0:0"))
 
