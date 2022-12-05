@@ -1,7 +1,7 @@
 # Import the Portal object.
 import geni.portal as portal
 # Import the ProtoGENI library.
-import geni.rspec.pg as pg
+import geni.rspec.pg as rspec
 # Import the Emulab specific extensions.
 import geni.rspec.emulab as emulab
 
@@ -75,7 +75,7 @@ for i in range(1, params.edgeNodes+1):
     name = "client" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
-    node.addService(pg.Execute(shell="bash", command="ip route add 192.168.2.0/24 via 192.168.1.1 dev eth0"))
+    node.addService(rspec.Execute(shell="bash", command="ip route add 192.168.2.0/24 via 192.168.1.1 dev eth0"))
     ip = "192.168.1." + str(i+1)
     #nfsLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
 
@@ -83,7 +83,7 @@ for i in range(1, params.clientNodes+1):
     name = "edge" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
-    node.addService(pg.Execute(shell="bash", command="ip route add 192.168.1.0/24 via 192.168.2.1 dev eth0"))
+    node.addService(rspec.Execute(shell="bash", command="ip route add 192.168.1.0/24 via 192.168.2.1 dev eth0"))
     nfsLan.addInterface(node.addInterface())
 
 for i in range(1, params.cloudNodes + 1):
@@ -96,10 +96,10 @@ for i in range(1, params.cloudNodes + 1):
 
 
 router = request.XenVM("router")
-cloudLan.addInterface(router.addInterface(pg.IPv4Address("192.168.2.1", "255.255.255.0")))
-nfsLan.addInterface(router.addInterface(pg.IPv4Address("192.168.1.1", "255.255.255.0")))
+cloudLan.addInterface(router.addInterface(rspec.IPv4Address("192.168.2.1", "255.255.255.0")))
+nfsLan.addInterface(router.addInterface(rspec.IPv4Address("192.168.1.1", "255.255.255.0")))
 router.disk_image = params.osImage
-router.addService(pg.Execute(shell="bash", command="ip route add 8.8.8.8/32 via 192.168.1.254 dev venet0:0"))
+router.addService(rspec.Execute(shell="bash", command="ip route add 8.8.8.8/32 via 192.168.1.254 dev venet0:0"))
 
 
 """
