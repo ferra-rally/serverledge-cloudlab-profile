@@ -91,7 +91,7 @@ for i in range(1, params.cloudNodes + 1):
     node = request.RawPC(name)
     node.disk_image = params.osImage
     node.hardware_type = params.phystype
-    ip = "192.168.2.}" + str(i+1)
+    ip = "192.168.2." + str(i+1)
     cloudLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
 
 
