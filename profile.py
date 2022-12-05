@@ -73,11 +73,11 @@ for i in range(1, params.clientCount+1):
 
 router = request.XenVM("router")
 int1 = router.addInterface()
-int1.addAddress(rspec.IPv4Address("192.168.1.1", "255.255.255.0"))
+int1.addAddress(rspec.IPv4Address("10.10.1.1", "255.255.255.0"))
 nfsLan.addInterface(int1)
 
 int2 = router.addInterface()
-int2.addAddress(rspec.IPv4Address("192.168.2.1", "255.255.255.0"))
+int2.addAddress(rspec.IPv4Address("10.10.2.1", "255.255.255.0"))
 cloudLan.addInterface(int2)
 
 router.disk_image = params.osImage
@@ -86,7 +86,12 @@ for i in range(1, params.edgeNodes+1):
     name = "client" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
-    node.addService(rspec.Execute(shell="bash", command="ip route add 192.168.2.0/24 via 192.168.1.1 dev eth0"))
+
+    node.addService(rspec.Install(url="https://bootstrap.pypa.io/get-pip.py", path="/local"))
+    node.addService(rspec.Execute(shell="bash", command="python3 /local/get-pip.py"))
+    node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
+
+    node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
     #ip = "192.168.1." + str(i+1)
     #nfsLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
 
@@ -94,7 +99,9 @@ for i in range(1, params.clientNodes+1):
     name = "edge" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
-    node.addService(rspec.Execute(shell="bash", command="ip route add 192.168.1.0/24 via 192.168.2.1 dev eth0"))
+    node.addService(rspec.Install(url="https://bootstrap.pypa.io/get-pip.py", path="/local"))
+    node.addService(rspec.Execute(shell="bash", command="python3 /local/get-pip.py"))
+    node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
     nfsLan.addInterface(node.addInterface())
 
 for i in range(1, params.cloudNodes + 1):
@@ -102,6 +109,11 @@ for i in range(1, params.cloudNodes + 1):
     node = request.RawPC(name)
     node.disk_image = params.osImage
     node.hardware_type = params.phystype
+    node.addService(rspec.Install(url="https://bootstrap.pypa.io/get-pip.py", path="/local"))
+    node.addService(rspec.Execute(shell="bash", command="python3 /local/get-pip.py"))
+    node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
+
+    node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.1.0/24 via 10.10.2.1 dev eth1"))
     #ip = "192.168.2." + str(i+1)
     #cloudLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
 
