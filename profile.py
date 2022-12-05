@@ -109,10 +109,11 @@ for i in range(1, params.cloudNodes + 1):
 
     #TODO change
     #node = request.RawPC(name)
+    # node.hardware_type = params.phystype
     node = request.XenVM(name)
 
     node.disk_image = params.osImage
-    node.hardware_type = params.phystype
+
     node.addService(rspec.Install(url="https://bootstrap.pypa.io/get-pip.py", path="/local"))
     node.addService(rspec.Execute(shell="bash", command="python3 /local/get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
