@@ -90,6 +90,7 @@ for i in range(1, params.edgeNodes+1):
     node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
+    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr//local"))
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
     ip = "10.10.1." + str(i+1)
@@ -105,6 +106,7 @@ for i in range(1, params.clientNodes+1):
     node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
+    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr//local"))
 
     ip = "10.10.1." + str(100 + i)
     interface = node.addInterface()
@@ -124,6 +126,7 @@ for i in range(1, params.cloudNodes + 1):
     node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 get-pip.py"))
     node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
+    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr//local"))
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.1.0/24 via 10.10.2.1 dev eth1"))
 
