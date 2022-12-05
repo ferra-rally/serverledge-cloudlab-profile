@@ -93,7 +93,7 @@ for i in range(1, params.edgeNodes+1):
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
     #ip = "192.168.1." + str(i+1)
-    #nfsLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
+    nfsLan.addInterface(node.addInterface())
 
 for i in range(1, params.clientNodes+1):
     name = "edge" + str(i)
@@ -119,7 +119,7 @@ for i in range(1, params.cloudNodes + 1):
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.1.0/24 via 10.10.2.1 dev eth1"))
     #ip = "192.168.2." + str(i+1)
-    #cloudLan.addInterface(node.addInterface(pg.IPv4Address(ip, "255.255.255.0")))
+    cloudLan.addInterface(node.addInterface())
 
 
 """
