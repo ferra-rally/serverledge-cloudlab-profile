@@ -57,20 +57,6 @@ cloudLan.best_effort       = True
 cloudLan.vlan_tagging      = True
 cloudLan.link_multiplexing = True
 
-"""
-for i in range(1, params.clientCount+1):
-    node = request.RawPC("node%d" % i)
-    node.disk_image = params.osImage
-    # Initialization script for the clients
-    nfsLan.addInterface(node.addInterface())
-    if params.phystype != "":
-        node.hardware_type = params.phystype
-    if params.localStorage != 0:
-        bsName="bs"+str(i)
-        bs = node.Blockstore(bsName, "/var/lib/libvirt/images")
-        bs.size=str(params.localStorage)+"GB"
-"""
-
 router = request.XenVM("router")
 int1 = router.addInterface()
 int1.addAddress(rspec.IPv4Address("10.10.1.1", "255.255.255.0"))
@@ -78,19 +64,26 @@ nfsLan.addInterface(int1)
 
 int2 = router.addInterface()
 int2.addAddress(rspec.IPv4Address("10.10.2.1", "255.255.255.0"))
+
+cmd = "sudo tc qdisc add dev eth2 root netem delay 100ms 20ms distribution normal"
+router.addService(rspec.Execute(shell="bash", command=cmd))
+
 cloudLan.addInterface(int2)
 
 router.disk_image = params.osImage
 
 for i in range(1, params.edgeNodes+1):
-    name = "client" + str(i)
+    name = "edge" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
 
-    node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py"))
-    node.addService(rspec.Execute(shell="bash", command="python3 get-pip.py"))
-    node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
-    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr//local"))
+    node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py; python3 "
+                                                        "get-pip.py; python3 -m pip install --user ansible"))
+    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
+    node.addService(rspec.Execute(shell="bash", command="sudo apt-get update; sudo apt-get install -y ca-certificates "
+                                                        "curl gnupg lsb-release; export PATH=$PATH:/usr/local/go/bin"))
+    node.addService(rspec.Execute(shell="bash", command="curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh "
+                                                        "get-docker.sh; sudo usermod -aG docker $USER; newgrp docker"))
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
     ip = "10.10.1." + str(i+1)
@@ -100,13 +93,16 @@ for i in range(1, params.edgeNodes+1):
 
 
 for i in range(1, params.clientNodes+1):
-    name = "edge" + str(i)
+    name = "client" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
-    node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py"))
-    node.addService(rspec.Execute(shell="bash", command="python3 get-pip.py"))
-    node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
-    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr//local"))
+    node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py; python3 "
+                                                        "get-pip.py; python3 -m pip install --user ansible"))
+    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
+    node.addService(rspec.Execute(shell="bash", command="sudo apt-get update; sudo apt-get install -y ca-certificates "
+                                                        "curl gnupg lsb-release; export PATH=$PATH:/usr/local/go/bin"))
+    node.addService(rspec.Execute(shell="bash", command="curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh "
+                                                        "get-docker.sh; sudo usermod -aG docker $USER; newgrp docker"))
 
     ip = "10.10.1." + str(100 + i)
     interface = node.addInterface()
@@ -123,95 +119,20 @@ for i in range(1, params.cloudNodes + 1):
 
     node.disk_image = params.osImage
 
-    node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py"))
-    node.addService(rspec.Execute(shell="bash", command="python3 get-pip.py"))
-    node.addService(rspec.Execute(shell="bash", command="python3 -m pip install --user ansible"))
-    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr//local"))
+    node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py; python3 "
+                                                        "get-pip.py; python3 -m pip install --user ansible"))
+    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.1.0/24 via 10.10.2.1 dev eth1"))
+    node.addService(rspec.Execute(shell="bash", command="sudo apt-get update; sudo apt-get install -y ca-certificates "
+                                                        "curl gnupg lsb-release; export PATH=$PATH:/usr/local/go/bin"))
+    node.addService(rspec.Execute(shell="bash", command="curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh "
+                                                        "get-docker.sh; sudo usermod -aG docker $USER; newgrp docker"))
 
     ip = "10.10.2." + str(i + 1)
     interface = node.addInterface()
     interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
     cloudLan.addInterface(interface)
-
-
-
-
-"""
-routerEdge = request.XenVM("routerEdge")
-routerEdge.disk_image = params.osImage
-nfsLan.addInterface(routerEdge.addInterface())
-
-routerCloud = request.XenVM("routerCloud")
-routerCloud.disk_image = params.osImage
-cloudLan.addInterface(routerCloud.addInterface())
-
-link = request.BridgedLink("link")
-# Add the interfaces we created above.
-link.addInterface(routerCloud.addInterface())
-link.addInterface(routerEdge.addInterface())
-link.latency = params.latency
-"""
-"""
-# Create link/lan.
-if params.nodeCount > 1:
-    if params.nodeCount == 2:
-        lan = request.Link()
-    else:
-        lan = request.LAN()
-        pass
-    if params.bestEffort:
-        lan.best_effort = True
-    elif params.linkSpeed > 0:
-        lan.bandwidth = params.linkSpeed
-    if params.sameSwitch:
-        lan.setNoInterSwitchLinks()
-    pass
-
-# Process nodes, adding to link or lan.
-for i in range(params.nodeCount):
-    # Create a node and add it to the request
-    if params.useVMs:
-        name = "vm" + str(i)
-        node = request.XenVM(name)
-    else:
-        name = "node" + str(i)
-        node = request.RawPC(name)
-        pass
-    if params.osImage and params.osImage != "default":
-        node.disk_image = params.osImage
-        pass
-    # Add to lan
-    if params.nodeCount > 1:
-        iface = node.addInterface("eth1")
-        lan.addInterface(iface)
-        pass
-    # Optional hardware type.
-    if params.phystype != "":
-        node.hardware_type = params.phystype
-        pass
-    # Optional Blockstore
-    if params.tempFileSystemSize > 0 or params.tempFileSystemMax:
-        bs = node.Blockstore(name + "-bs", params.tempFileSystemMount)
-        if params.tempFileSystemMax:
-            bs.size = "0GB"
-        else:
-            bs.size = str(params.tempFileSystemSize) + "GB"
-            pass
-        bs.placement = "any"
-        pass
-    #
-    # Install and start X11 VNC. Calling this informs the Portal that you want a VNC
-    # option in the node context menu to create a browser VNC client.
-    #
-    # If you prefer to start the VNC server yourself (on port 5901) then add nostart=True.
-    #
-    if params.startVNC:
-        node.startVNC()
-        pass
-    pass
-"""
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
