@@ -78,7 +78,8 @@ for i in range(1, params.edgeNodes + 1):
                                                         "get-pip.py; python3 -m pip install --user ansible"))
     node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
     node.addService(rspec.Execute(shell="bash", command="sudo apt-get update; sudo apt-get install -y ca-certificates "
-                                                        "curl gnupg lsb-release; export PATH=$PATH:/usr/local/go/bin"))
+                                                        'curl gnupg lsb-release; echo "export '
+                                                        'PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile'))
     node.addService(rspec.Execute(shell="bash", command="curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh "
                                                         "get-docker.sh; sudo usermod -aG docker $USER; newgrp docker"))
 
@@ -96,7 +97,8 @@ for i in range(1, params.clientNodes + 1):
                                                         "get-pip.py; python3 -m pip install --user ansible"))
     node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
     node.addService(rspec.Execute(shell="bash", command="sudo apt-get update; sudo apt-get install -y ca-certificates "
-                                                        "curl gnupg lsb-release; export PATH=$PATH:/usr/local/go/bin"))
+                                                        'curl gnupg lsb-release; echo "export '
+                                                        'PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile'))
     node.addService(rspec.Execute(shell="bash", command="curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh "
                                                         "get-docker.sh; sudo usermod -aG docker $USER; newgrp docker"))
 
@@ -121,7 +123,8 @@ for i in range(1, params.cloudNodes + 1):
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.1.0/24 via 10.10.2.1 dev eth1"))
     node.addService(rspec.Execute(shell="bash", command="sudo apt-get update; sudo apt-get install -y ca-certificates "
-                                                        "curl gnupg lsb-release; export PATH=$PATH:/usr/local/go/bin"))
+                                                        'curl gnupg lsb-release; echo "export '
+                                                        'PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile'))
     node.addService(rspec.Execute(shell="bash", command="curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh "
                                                         "get-docker.sh; sudo usermod -aG docker $USER; newgrp docker"))
 
