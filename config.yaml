@@ -20,7 +20,7 @@ registry:
   udp:
     port: 9876
 solver:
-  address: "localhost:2500"
+  address: "10.10.2.2:2500"
 storage:
   address: "http://localhost:8086"
   token: "serverledge"
