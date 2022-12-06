@@ -77,9 +77,7 @@ for i in range(1, params.edgeNodes + 1):
 
     node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
 
-    node.addService(rspec.Execute(shell="bash", command="wget https://raw.githubusercontent.com/ferra-rally"
-                                                        "/serverledge-cloudlab-profile/main/startup.sh"))
-    node.addService(rspec.Execute(shell="bash", command="startup.sh"))
+    node.addService(rspec.Execute(shell="bash", command="wget -O -  https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/startup.sh | bash"))
 
     """
     node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py; python3 "
@@ -103,9 +101,7 @@ for i in range(1, params.clientNodes + 1):
 
     node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
 
-    node.addService(rspec.Execute(shell="bash", command="wget https://raw.githubusercontent.com/ferra-rally"
-                                                        "/serverledge-cloudlab-profile/main/startup.sh"))
-    node.addService(rspec.Execute(shell="bash", command="startup.sh"))
+    node.addService(rspec.Execute(shell="bash", command="wget -O -  https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/startup.sh | bash"))
 
     """
     node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py; python3 "
@@ -139,9 +135,7 @@ for i in range(1, params.cloudNodes + 1):
 
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.1.0/24 via 10.10.2.1 dev eth1"))
 
-    node.addService(rspec.Execute(shell="bash", command="wget https://raw.githubusercontent.com/ferra-rally"
-                                                        "/serverledge-cloudlab-profile/main/startup.sh"))
-    node.addService(rspec.Execute(shell="bash", command="startup.sh"))
+    node.addService(rspec.Execute(shell="bash", command="wget -O -  https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/startup.sh | bash"))
 
     """
     node.addService(rspec.Execute(shell="bash", command="wget https://bootstrap.pypa.io/get-pip.py; python3 "
