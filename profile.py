@@ -35,8 +35,11 @@ pc.defineParameter("osImage", "Select OS image",
                    portal.ParameterType.IMAGE,
                    imageList[0], imageList)
 
+pc.defineParameter("cloudVms", "Use cloud vms",
+                   portal.ParameterType.BOOLEAN, True)
+
 pc.defineParameter("phystype", "Optional cloud physical node type",
-                   portal.ParameterType.STRING, "c6320",
+                   portal.ParameterType.STRING, "",
                    longDescription="Specify a physical node type (pc3000,d710,etc) " +
                                    "instead of letting the resource mapper choose for you.")
 
@@ -121,10 +124,11 @@ for i in range(1, params.clientNodes + 1):
 for i in range(1, params.cloudNodes + 1):
     name = "cloud" + str(i)
 
-    # TODO change
-    # node = request.RawPC(name)
-    # node.hardware_type = params.phystype
-    node = request.XenVM(name)
+    if params.cloudVms:
+        node = request.XenVM(name)
+    else:
+        node = request.RawPC(name)
+        node.hardware_type = params.phystype
 
     node.disk_image = params.osImage
 
