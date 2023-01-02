@@ -106,7 +106,6 @@ for i in range(1, params.clientNodes + 1):
     node.disk_image = params.osImage
 
     node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
-    node.addService(rspec.Install(url="wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.5.tgz", path="/usr/local"))
 
     node.addService(rspec.Install(url="https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/startup.tar.gz", path="/usr/local"))
     node.addService(rspec.Execute(shell="bash", command="bash /usr/local/startup.sh"))
