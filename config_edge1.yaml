@@ -1,0 +1,20 @@
+metrics:
+  enabled: true
+container:
+  pool:
+    cpus: 2
+    memory: 1024
+api:
+  port: 1323
+cloud:
+  server:
+    url: http://10.10.2.2:1325
+scheduler:
+  policy: edgeonly
+  cloud:
+    cost: 0.0001
+registry:
+  udp:
+    port: 9876
+etcd:
+  address: 10.10.2.2:2379
