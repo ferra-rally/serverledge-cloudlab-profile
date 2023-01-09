@@ -6,7 +6,7 @@ container:
     memory: 1024
 api:
   port: 1323
-  ip: 10.10.1.2
+  ip: 10.10.1.3
 cloud:
   server:
     url: http://10.10.2.2:1325
