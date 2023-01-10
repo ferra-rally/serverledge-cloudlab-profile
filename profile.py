@@ -24,6 +24,9 @@ pc.defineParameter("clientNodes", "Number of Client Nodes",
 pc.defineParameter("edgeNodes", "Number of Edge Nodes", portal.ParameterType.INTEGER, 1,
                    longDescription="Number of edge serverledge nodes")
 
+pc.defineParameter("edgeMemory", "RAM of Edge Nodes", portal.ParameterType.INTEGER, 1024,
+                   longDescription="RAM of edge serverledge nodes")
+
 # Variable number of cloud nodes.
 pc.defineParameter("cloudNodes", "Number of Cloud Nodes", portal.ParameterType.INTEGER, 1,
                    longDescription="If you specify more then one node, " +
@@ -37,6 +40,9 @@ pc.defineParameter("osImage", "Select OS image",
 
 pc.defineParameter("cloudVms", "Use cloud vms",
                    portal.ParameterType.BOOLEAN, True)
+
+pc.defineParameter("cloudMemory", "RAM of Cloud Nodes", portal.ParameterType.INTEGER, 1024,
+                   longDescription="RAM of Cloud Nodes if they are VMs")
 
 pc.defineParameter("phystype", "Optional cloud physical node type",
                    portal.ParameterType.STRING, "",
@@ -76,6 +82,7 @@ for i in range(1, params.edgeNodes + 1):
     name = "edge" + str(i)
     node = request.XenVM(name)
     node.disk_image = params.osImage
+    node.ram = params.edgeMemory
 
 
     node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
@@ -132,12 +139,12 @@ for i in range(1, params.cloudNodes + 1):
 
     if params.cloudVms:
         node = request.XenVM(name)
+        node.ram = params.cloudMemory
     else:
         node = request.RawPC(name)
         node.hardware_type = params.phystype
 
     node.disk_image = params.osImage
-
 
     node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
 
