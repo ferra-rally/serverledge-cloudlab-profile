@@ -120,7 +120,8 @@ for i in range(1, params.edgeNodes + 1):
 if params.addEdgeHardware:
     name = "edge_raw"
     node = request.RawPC(name)
-    node.hardware_type = params.phystype
+
+    node.hardware_type = params.edgeHardware
     node.disk_image = params.osImage
 
     node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
@@ -129,10 +130,11 @@ if params.addEdgeHardware:
         path="/usr/local"))
     node.addService(rspec.Execute(shell="bash", command="bash /usr/local/startup.sh"))
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
+
     ip = "10.10.1.201"
     interface = node.addInterface()
 
-    cmd = "sudo tc qdisc add dev eth1 root netem delay %sms 20ms distribution normal" % str(params.edgeLatency)
+    cmd = "sudo tc qdisc add dev ens3f0 root netem delay %sms 20ms distribution normal" % str(params.edgeLatency)
     node.addService(rspec.Execute(shell="bash", command=cmd))
 
     interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
