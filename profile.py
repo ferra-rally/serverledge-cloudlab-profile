@@ -32,7 +32,7 @@ pc.defineParameter("cloudNodes", "Number of Cloud Nodes", portal.ParameterType.I
                    longDescription="If you specify more then one node, " +
                                    "we will create a lan for you.")
 
-pc.defineParameter("latency", "Latency of the edge-cloud link", portal.ParameterType.LATENCY, 100)
+pc.defineParameter("latency", "Latency of the edge-cloud link", portal.ParameterType.LATENCY, 300)
 
 pc.defineParameter("osImage", "Select OS image",
                    portal.ParameterType.IMAGE,
@@ -51,6 +51,8 @@ pc.defineParameter("phystype", "Optional cloud physical node type",
 
 pc.defineParameter("addEdgeHardware", "Additional Edge hardware",
                    portal.ParameterType.BOOLEAN, True)
+
+pc.defineParameter("edgeLatency", "Latency of the edge-edge link", portal.ParameterType.LATENCY, 100)
 
 pc.defineParameter("edgeHardware", "Optional edge physical node type",
                    portal.ParameterType.STRING, "r6525",
@@ -129,6 +131,10 @@ if params.addEdgeHardware:
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
     ip = "10.10.1.201"
     interface = node.addInterface()
+
+    cmd = "sudo tc qdisc add dev eth1 root netem delay %sms 20ms distribution normal" % str(params.edgeLatency)
+    node.addService(rspec.Execute(shell="bash", command=cmd))
+
     interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
     nfsLan.addInterface(interface)
 
