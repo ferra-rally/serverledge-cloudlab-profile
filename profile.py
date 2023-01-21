@@ -39,13 +39,21 @@ pc.defineParameter("osImage", "Select OS image",
                    imageList[0], imageList)
 
 pc.defineParameter("cloudVms", "Use cloud vms",
-                   portal.ParameterType.BOOLEAN, True)
+                   portal.ParameterType.BOOLEAN, False)
 
 pc.defineParameter("cloudMemory", "RAM of Cloud Nodes", portal.ParameterType.INTEGER, 1024,
                    longDescription="RAM of Cloud Nodes if they are VMs")
 
 pc.defineParameter("phystype", "Optional cloud physical node type",
                    portal.ParameterType.STRING, "",
+                   longDescription="Specify a physical node type (pc3000,d710,etc) " +
+                                   "instead of letting the resource mapper choose for you.")
+
+pc.defineParameter("edgeHardware", "Additional Edge hardware",
+                   portal.ParameterType.BOOLEAN, True)
+
+pc.defineParameter("edgeHardware", "Optional edge physical node type",
+                   portal.ParameterType.STRING, "r6525",
                    longDescription="Specify a physical node type (pc3000,d710,etc) " +
                                    "instead of letting the resource mapper choose for you.")
 
@@ -103,6 +111,23 @@ for i in range(1, params.edgeNodes + 1):
     """
     node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
     ip = "10.10.1." + str(i + 1)
+    interface = node.addInterface()
+    interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
+    nfsLan.addInterface(interface)
+
+if params.edgeHardware:
+    name = "edge_raw"
+    node = request.RawPC(name)
+    node.hardware_type = params.phystype
+    node.disk_image = params.osImage
+
+    node.addService(rspec.Install(url="https://go.dev/dl/go1.19.3.linux-amd64.tar.gz", path="/usr/local"))
+    node.addService(rspec.Install(
+        url="https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/startup.tar.gz",
+        path="/usr/local"))
+    node.addService(rspec.Execute(shell="bash", command="bash /usr/local/startup.sh"))
+    node.addService(rspec.Execute(shell="bash", command="ip route add 10.10.2.0/24 via 10.10.1.1 dev eth1"))
+    ip = "10.10.1.201"
     interface = node.addInterface()
     interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
     nfsLan.addInterface(interface)
