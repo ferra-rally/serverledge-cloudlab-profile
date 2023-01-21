@@ -45,11 +45,11 @@ pc.defineParameter("cloudMemory", "RAM of Cloud Nodes", portal.ParameterType.INT
                    longDescription="RAM of Cloud Nodes if they are VMs")
 
 pc.defineParameter("phystype", "Optional cloud physical node type",
-                   portal.ParameterType.STRING, "",
+                   portal.ParameterType.STRING, "r6525",
                    longDescription="Specify a physical node type (pc3000,d710,etc) " +
                                    "instead of letting the resource mapper choose for you.")
 
-pc.defineParameter("edgeHardware", "Additional Edge hardware",
+pc.defineParameter("addEdgeHardware", "Additional Edge hardware",
                    portal.ParameterType.BOOLEAN, True)
 
 pc.defineParameter("edgeHardware", "Optional edge physical node type",
@@ -115,7 +115,7 @@ for i in range(1, params.edgeNodes + 1):
     interface.addAddress(rspec.IPv4Address(ip, "255.255.255.0"))
     nfsLan.addInterface(interface)
 
-if params.edgeHardware:
+if params.addEdgeHardware:
     name = "edge_raw"
     node = request.RawPC(name)
     node.hardware_type = params.phystype
