@@ -9,5 +9,6 @@ wget https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/
 wget https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/stop-prometheus.sh
 wget https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/prometheus.yaml
 wget https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/config_edge1.yaml
+wget https://raw.githubusercontent.com/ferra-rally/serverledge-cloudlab-profile/main/config_edge2.yaml
 PATH=$PATH:/usr/local/go/bin make
 PATH=$PATH:/usr/local/go/bin:/opt/jdk-18/bin JAVA_HOME=/opt/jdk-18  bash
