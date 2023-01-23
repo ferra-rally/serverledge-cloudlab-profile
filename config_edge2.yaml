@@ -2,14 +2,11 @@ metrics:
   enabled: true
 container:
   pool:
-    cpus: 2
-    memory: 1024
+    cpus: 4
+    memory: 20480
 api:
-  port: 1323
-  ip: 10.10.1.3
-cloud:
-  server:
-    url: http://10.10.2.2:1325
+  port: 1325
+  ip: 10.10.2.2
 scheduler:
   policy: edgeonly
   cloud:
@@ -17,5 +14,6 @@ scheduler:
 registry:
   udp:
     port: 9876
+  #area: MILAN
 etcd:
   address: 10.10.2.2:2379
