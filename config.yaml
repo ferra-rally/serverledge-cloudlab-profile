@@ -6,9 +6,10 @@ container:
     memory: 1024
 api:
   port: 1323
+  ip: 10.10.1.2
 cloud:
   server:
-    url: http://10.10.2.2:1325
+    url: http://10.10.2.2:1323
 scheduler:
   #policy: edgecloud
   policy: customCloudOffload
@@ -27,3 +28,5 @@ storage:
   orgname: "serverledge"
 etcd:
   address: 10.10.2.2:2379
+docker:
+  cpu: 0.5

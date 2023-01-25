@@ -5,7 +5,8 @@ container:
     cpus: 4
     memory: 20000
 api:
-  port: 1325
+  port: 1323
+  ip: 10.10.2.2
 cloud: true
 registry:
   udp:

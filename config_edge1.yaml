@@ -20,3 +20,5 @@ registry:
     port: 9876
 etcd:
   address: 10.10.2.2:2379
+docker:
+  cpu: 0.5
